@@ -18,18 +18,18 @@ $$
 M_\theta(x) \;=\; M_{\mathrm{base}}(x) \;+\; A_\theta\,x
 $$
 
-$$
-where \(A_\theta\) is a low‑rank matrix of shape \(r \times d\) with \(r \ll d\), i.e.
-$$
+where $\(A_\theta\)$ is a low‑rank matrix of shape $\(r \times d\)$ with $\(r \ll d\)$, i.e.
 
 $$
 A_\theta \in \mathbb{R}^{r \times d}, \quad r \ll d.
 $$
 
 Given a dataset 
+
 $$
-D = \{(P_i, C_i)\}_{i=1}^N,
+D \;=\; \{(P_i, C_i)\}_{i=1}^N,
 $$
+
 the loss function is
 
 $$
@@ -39,9 +39,8 @@ $$
 ---
 
 ## 3. Inference as Sampling
-$$
-Given a problem prompt \(P\), the model samples a set of candidate solutions:
-$$
+
+Given a problem prompt $\(P\)$, the model samples a set of candidate solutions:
 
 $$
 \Omega_P \;=\; \bigl\{\,C^{(1)},\,C^{(2)},\,\dots,\,C^{(k)}\bigr\},
@@ -55,9 +54,8 @@ These candidates are then evaluated via a reward function grounded in execution.
 ---
 
 ## 4. Execution-Based Reward Function
-$$
-Let \(T = \{(x_j, y_j)\}_{j=1}^n\) be a test suite. The reward function is defined as
-$$
+
+Let $\(T = \{(x_j, y_j)\}_{j=1}^n\)$ be a test suite. The reward function is defined as
 
 $$
 R(C, T)
@@ -72,14 +70,14 @@ R(C, T)
 $$
 
 Where:
-- \(\mathrm{Exec}(C, x_j)\) runs the compiled code \(C\) on input \(x_j\).
-- \(\mathrm{err\_flag}\), \(\mathrm{tle\_flag}\), and \(\mathrm{mle\_flag}\) are indicator variables for compile errors, time limit exceeded, and memory limit exceeded.
-- \(\lambda_{\dots}\) are penalty weights.
+- $\(\mathrm{Exec}(C, x_j)\)$ runs the compiled code $\(C\)$ on input $\(x_j\)$.
+- $\(\mathrm{err\_flag}\)$, $\(\mathrm{tle\_flag}\)$, and $\(\mathrm{mle\_flag}\)$ are indicator variables for compile errors, time limit exceeded, and memory limit exceeded.
+- $\(\lambda_{\dots}\)$ are penalty weights.
 
 The optimal solution is:
 
 $$
-C^* = \arg\max_{C \in \Omega_P} R(C, T).
+C^* \;=\; \arg\max_{C \in \Omega_P} R(C, T).
 $$
 
 ---
@@ -103,9 +101,9 @@ This encourages the model to prefer high-reward solutions by maximizing the loss
 ## 6. Theoretical Properties
 
 ### 6.1 Correctness Guarantee
-$$
-If \(R(C, T) = 1\) and \(T\) spans the full domain, then \(C\) is functionally correct under all test cases and resource constraints.
-$$
+
+If $\(R(C, T) = 1\)$ and $\(T\)$ spans the full domain, then $\(C\)$ is functionally correct under all test cases and resource constraints.
+
 ---
 
 ### 6.2 Resource-Constrained Solution Space
@@ -113,18 +111,14 @@ $$
 Define the valid solution space:
 
 $$
-C_{t,m}
-= \left\{\,C \in \mathcal{C}\;\middle|\;\mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\right\}.
+C_{t,m} = \left\{\,C \in \mathcal{C}\;\middle|\;\mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\right\}.
 $$
 
-$$
-The output \(C^*\) is guaranteed to lie in \(C_{t,m}\) and \(C_{\mathrm{valid}}\), ensuring feasibility.
-$$
+The output $\(C^*\)$ is guaranteed to lie in $\(C_{t,m}\)$ and $\(C_{\mathrm{valid}}\)$, ensuring feasibility.
 
 ### 6.3 Lipschitz Continuity
-$$
-If \(M_{\mathrm{base}}\) is Lipschitz continuous with constant \(L_0\), and the LoRA adapter \(A_\theta\) satisfies \(\|A_\theta\|\le L_A\), then
-$$
+
+If $\(M_{\mathrm{base}}\)$ is Lipschitz continuous with constant $\(L_0\)$, and the LoRA adapter $\(A_\theta\)$ satisfies $\(\|A_\theta\|\le L_A\)$, then
 
 $$
 \|M_\theta(x_1) - M_\theta(x_2)\|
@@ -135,13 +129,13 @@ $$
 Ensuring robustness to small prompt variations.
 
 ### 6.4 Sampling Convergence
-$$
-Given a probability \(p > 0\) of sampling a perfect candidate:
-$$
+
+Given a probability $$\(p > 0\)$$ of sampling a perfect candidate:
+
 
 $$
 \lim_{k \to \infty}
-\Pr\bigl(\max_{1 \le i \le k} R(C^{(i)}, T) = 1\bigr)
+\Pr\!\left(\max_{1 \le i \le k} R\bigl(C^{(i)}, T\bigr) = 1\right)
 = 1.
 $$
 
