@@ -85,9 +85,9 @@ To improve the model, we select the best and worst candidates from Omega_P based
 
 $$
 L_{\mathrm{PairWise}}
-\;=\;
+\=\
 \mathrm{Loss}\!\left(C_{\mathrm{worst}}\right)
-\;-\;
+\-\
 \mathrm{Loss}\!\left(C_{\mathrm{best}}\right).
 $$
 
@@ -108,9 +108,9 @@ If $\(R(C, T) = 1\)$ and $\(T\)$ spans the full domain, then $\(C\)$ is function
 Define the valid solution space:
 
 $$
-C_{t,m}
-= \left\{\,C \in \mathcal{C}\;\middle|\;\mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\right\}.
+C_{t,m} = \{\,C \in \mathcal{C} \mid \mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\}.
 $$
+
 
 The output $\(C^*\)$ is guaranteed to lie in $\(C_{t,m}\)$ and $\(C_{\mathrm{valid}}\)$, ensuring feasibility.
 
