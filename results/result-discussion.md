@@ -49,7 +49,7 @@ The model generated a solution which was evaluated using the following test case
 
 ---
 
-## 🧾 Evaluation Results
+##  Evaluation Results
 
 | Metric           | Value     |
 |------------------|-----------|
