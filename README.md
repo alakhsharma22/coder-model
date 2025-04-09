@@ -14,40 +14,69 @@ UNCODE integrates formal reasoning and execution-based feedback to create functi
 
 Let M_base denote the frozen base transformer model. LoRA introduces a low-rank perturbation:
 
-M_theta(x) = M_base(x) + A_theta * x
+$$
+M_\theta(x) \;=\; M_{\mathrm{base}}(x) \;+\; A_\theta\,x
+$$
 
-Where `A_theta` is a low-rank matrix of shape (r × d), with `r << d`.
+where \(A_\theta\) is a low‑rank matrix of shape \(r \times d\) with \(r \ll d\), i.e.
 
-Given a dataset D = {(P_i, C_i)} for i = 1 to N, the loss function is:
+$$
+A_\theta \in \mathbb{R}^{r \times d}, \quad r \ll d.
+$$
 
-L(θ) = (1 / N) * sum_{i=1}^{N} CE(M_theta(P_i), C_i)
+Given a dataset 
+\[
+D = \{(P_i, C_i)\}_{i=1}^N,
+\]
+the loss function is
+
+$$
+L(\theta) \;=\; \frac{1}{N} \sum_{i=1}^N \mathrm{CE}\bigl(M_\theta(P_i),\,C_i\bigr),
+$$
 
 ---
 
 ## 3. Inference as Sampling
 
-Given a problem prompt \( P \), the model samples a set of candidate solutions:
+Given a problem prompt \(P\), the model samples a set of candidate solutions:
 
-Omega_P = {C^(1), C^(2), ..., C^(k)}, where each C^(i) ~ Sample(M_theta, P)
+$$
+\Omega_P \;=\; \bigl\{\,C^{(1)},\,C^{(2)},\,\dots,\,C^{(k)}\bigr\},
+\quad
+C^{(i)} \sim \mathrm{Sample}\bigl(M_\theta,\,P\bigr).
+$$
 
-These candidates are evaluated through a reward function grounded in execution.
+These candidates are then evaluated via a reward function grounded in execution.
+
 
 ---
 
 ## 4. Execution-Based Reward Function
 
-Let T = {(x_j, y_j)} for j = 1 to n be a test suite. The reward function is defined as:
+Let \(T = \{(x_j, y_j)\}_{j=1}^n\) be a test suite. The reward function is defined as
 
-R(C, T) = (1/n) * sum_{j=1}^{n} [Exec(C, x_j) == y_j] - lambda_err * err_flag - lambda_tle * tle_flag - lambda_mle * mle_flag
+$$
+R(C, T)
+=
+\frac{1}{n}\sum_{j=1}^n \mathbf{1}\bigl(\mathrm{Exec}(C, x_j) = y_j\bigr)
+\;-\;
+\lambda_{\mathrm{err}}\,\mathrm{err\_flag}
+\;-\;
+\lambda_{\mathrm{tle}}\,\mathrm{tle\_flag}
+\;-\;
+\lambda_{\mathrm{mle}}\,\mathrm{mle\_flag}.
+$$
 
 Where:
-- `Exec(C, x_j)` runs the compiled code C on input x_j.
-- `err_flag`, `tle_flag`, and `mle_flag` are indicator variables for compile errors, time limit exceeded, and memory limit exceeded.
-- `lambda_...` are penalty weights.
+- \(\mathrm{Exec}(C, x_j)\) runs the compiled code \(C\) on input \(x_j\).
+- \(\mathrm{err\_flag}\), \(\mathrm{tle\_flag}\), and \(\mathrm{mle\_flag}\) are indicator variables for compile errors, time limit exceeded, and memory limit exceeded.
+- \(\lambda_{\dots}\) are penalty weights.
 
 The optimal solution is:
 
-C* = argmax_{C in Omega_P} R(C, T)
+$$
+C^* = \arg\max_{C \in \Omega_P} R(C, T).
+$$
 
 ---
 
@@ -55,7 +84,13 @@ C* = argmax_{C in Omega_P} R(C, T)
 
 To improve the model, we select the best and worst candidates from Omega_P based on reward. The loss is then computed as:
 
-L_PairWise = Loss(C_worst) - Loss(C_best)
+$$
+L_{\mathrm{PairWise}}
+\;=\;
+\mathrm{Loss}\bigl(C_{\mathrm{worst}}\bigr)
+\;-\;
+\mathrm{Loss}\bigl(C_{\mathrm{best}}\bigr).
+$$
 
 This encourages the model to prefer high-reward solutions by maximizing the loss difference.
 
@@ -65,7 +100,7 @@ This encourages the model to prefer high-reward solutions by maximizing the loss
 
 ### 6.1 Correctness Guarantee
 
-If `R(C, T) = 1` and T spans the full domain, then C is functionally correct under all test cases and resource constraints.
+If \(R(C, T) = 1\) and \(T\) spans the full domain, then \(C\) is functionally correct under all test cases and resource constraints.
 
 ---
 
@@ -73,23 +108,35 @@ If `R(C, T) = 1` and T spans the full domain, then C is functionally correct und
 
 Define the valid solution space:
 
-C_{t, m} = {C in C | ExecTime(C) <= t and MemUsage(C) <= m}
+$$
+C_{t,m}
+\;=\;
+\bigl\{\,C \in \mathcal{C}\;\bigm|\;\mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\bigr\}.
+$$
 
-The output C* is guaranteed to lie in C_{t, m} and C_valid, ensuring feasibility.
+The output \(C^*\) is guaranteed to lie in \(C_{t,m}\) and \(C_{\mathrm{valid}}\), ensuring feasibility.
 
 ### 6.3 Lipschitz Continuity
 
-If `M_base` is Lipschitz continuous with constant L0, and the LoRA adapter `A_theta` has norm <= LA, then:
+If \(M_{\mathrm{base}}\) is Lipschitz continuous with constant \(L_0\), and the LoRA adapter \(A_\theta\) satisfies \(\|A_\theta\|\le L_A\), then
 
-||M_theta(x1) - M_theta(x2)|| <= (L0 + LA) * ||x1 - x2||
+$$
+\|M_\theta(x_1) - M_\theta(x_2)\|
+\;\le\;
+\bigl(L_0 + L_A\bigr)\,\|x_1 - x_2\|.
+$$
 
 Ensuring robustness to small prompt variations.
 
 ### 6.4 Sampling Convergence
 
-Given p > 0 probability of sampling a perfect candidate:
+Given a probability \(p > 0\) of sampling a perfect candidate:
 
-As k -> infinity, P(max_{i} R(C^(i), T) = 1) -> 1
+$$
+\lim_{k \to \infty}
+\Pr\bigl(\max_{1 \le i \le k} R(C^{(i)}, T) = 1\bigr)
+= 1.
+$$
 
 ---
 
