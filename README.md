@@ -18,16 +18,18 @@ $$
 M_\theta(x) \;=\; M_{\mathrm{base}}(x) \;+\; A_\theta\,x
 $$
 
+$$
 where \(A_\theta\) is a low‑rank matrix of shape \(r \times d\) with \(r \ll d\), i.e.
+$$
 
 $$
 A_\theta \in \mathbb{R}^{r \times d}, \quad r \ll d.
 $$
 
 Given a dataset 
-\[
+$$
 D = \{(P_i, C_i)\}_{i=1}^N,
-\]
+$$
 the loss function is
 
 $$
@@ -37,8 +39,9 @@ $$
 ---
 
 ## 3. Inference as Sampling
-
+$$
 Given a problem prompt \(P\), the model samples a set of candidate solutions:
+$$
 
 $$
 \Omega_P \;=\; \bigl\{\,C^{(1)},\,C^{(2)},\,\dots,\,C^{(k)}\bigr\},
@@ -52,8 +55,9 @@ These candidates are then evaluated via a reward function grounded in execution.
 ---
 
 ## 4. Execution-Based Reward Function
-
+$$
 Let \(T = \{(x_j, y_j)\}_{j=1}^n\) be a test suite. The reward function is defined as
+$$
 
 $$
 R(C, T)
@@ -87,9 +91,9 @@ To improve the model, we select the best and worst candidates from Omega_P based
 $$
 L_{\mathrm{PairWise}}
 \;=\;
-\mathrm{Loss}\bigl(C_{\mathrm{worst}}\bigr)
+\mathrm{Loss}\!\left(C_{\mathrm{worst}}\right)
 \;-\;
-\mathrm{Loss}\bigl(C_{\mathrm{best}}\bigr).
+\mathrm{Loss}\!\left(C_{\mathrm{best}}\right).
 $$
 
 This encourages the model to prefer high-reward solutions by maximizing the loss difference.
@@ -99,9 +103,9 @@ This encourages the model to prefer high-reward solutions by maximizing the loss
 ## 6. Theoretical Properties
 
 ### 6.1 Correctness Guarantee
-
+$$
 If \(R(C, T) = 1\) and \(T\) spans the full domain, then \(C\) is functionally correct under all test cases and resource constraints.
-
+$$
 ---
 
 ### 6.2 Resource-Constrained Solution Space
@@ -110,15 +114,17 @@ Define the valid solution space:
 
 $$
 C_{t,m}
-\;=\;
-\bigl\{\,C \in \mathcal{C}\;\bigm|\;\mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\bigr\}.
+= \left\{\,C \in \mathcal{C}\;\middle|\;\mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\right\}.
 $$
 
+$$
 The output \(C^*\) is guaranteed to lie in \(C_{t,m}\) and \(C_{\mathrm{valid}}\), ensuring feasibility.
+$$
 
 ### 6.3 Lipschitz Continuity
-
+$$
 If \(M_{\mathrm{base}}\) is Lipschitz continuous with constant \(L_0\), and the LoRA adapter \(A_\theta\) satisfies \(\|A_\theta\|\le L_A\), then
+$$
 
 $$
 \|M_\theta(x_1) - M_\theta(x_2)\|
@@ -129,8 +135,9 @@ $$
 Ensuring robustness to small prompt variations.
 
 ### 6.4 Sampling Convergence
-
+$$
 Given a probability \(p > 0\) of sampling a perfect candidate:
+$$
 
 $$
 \lim_{k \to \infty}
