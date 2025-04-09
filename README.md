@@ -43,9 +43,8 @@ $$
 Given a problem prompt $\(P\)$, the model samples a set of candidate solutions:
 
 $$
-\Omega_P \;=\; \bigl\{\,C^{(1)},\,C^{(2)},\,\dots,\,C^{(k)}\bigr\},
-\quad
-C^{(i)} \sim \mathrm{Sample}\bigl(M_\theta,\,P\bigr).
+\Omega_P = \{C^{(1)}, C^{(2)}, \dots, C^{(k)}\}, \quad
+C^{(i)} \sim \mathrm{Sample}(M_\theta, P).
 $$
 
 These candidates are then evaluated via a reward function grounded in execution.
@@ -58,16 +57,14 @@ These candidates are then evaluated via a reward function grounded in execution.
 Let $\(T = \{(x_j, y_j)\}_{j=1}^n\)$ be a test suite. The reward function is defined as
 
 $$
-R(C, T)
-=
-\frac{1}{n}\sum_{j=1}^n \mathbf{1}\bigl(\mathrm{Exec}(C, x_j) = y_j\bigr)
-\;-\;
-\lambda_{\mathrm{err}}\,\mathrm{err\_flag}
-\;-\;
-\lambda_{\mathrm{tle}}\,\mathrm{tle\_flag}
-\;-\;
-\lambda_{\mathrm{mle}}\,\mathrm{mle\_flag}.
+\begin{aligned}
+R(C, T) &= \frac{1}{n}\sum_{j=1}^n \mathbf{1}\bigl(\mathrm{Exec}(C, x_j) = y_j\bigr)\\
+        &\quad - \lambda_{\mathrm{err}}\,\mathrm{err\_flag}
+          - \lambda_{\mathrm{tle}}\,\mathrm{tle\_flag}
+          - \lambda_{\mathrm{mle}}\,\mathrm{mle\_flag}.
+\end{aligned}
 $$
+
 
 Where:
 - $\(\mathrm{Exec}(C, x_j)\)$ runs the compiled code $\(C\)$ on input $\(x_j\)$.
@@ -111,7 +108,8 @@ If $\(R(C, T) = 1\)$ and $\(T\)$ spans the full domain, then $\(C\)$ is function
 Define the valid solution space:
 
 $$
-C_{t,m} = \left\{\,C \in \mathcal{C}\;\middle|\;\mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\right\}.
+C_{t,m}
+= \left\{\,C \in \mathcal{C}\;\middle|\;\mathrm{ExecTime}(C)\le t,\;\mathrm{MemUsage}(C)\le m\right\}.
 $$
 
 The output $\(C^*\)$ is guaranteed to lie in $\(C_{t,m}\)$ and $\(C_{\mathrm{valid}}\)$, ensuring feasibility.
